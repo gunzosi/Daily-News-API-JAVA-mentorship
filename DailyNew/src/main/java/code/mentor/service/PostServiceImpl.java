@@ -1,7 +1,7 @@
 package code.mentor.service;
 
-import code.mentor.dao.PostRepository;
-import code.mentor.entities.Post;
+import code.mentor.repository.PostRepository;
+import code.mentor.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

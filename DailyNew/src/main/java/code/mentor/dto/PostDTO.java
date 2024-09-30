@@ -2,7 +2,7 @@ package code.mentor.dto;
 
 
 
-import code.mentor.entities.Category;
+import code.mentor.models.Category;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package code.mentor.service;
 
-import code.mentor.entities.Category;
+import code.mentor.models.Category;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package code.mentor.service;
 
-import code.mentor.entities.Post;
+import code.mentor.models.Post;
 
 import java.util.List;
 

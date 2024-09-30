@@ -2,8 +2,8 @@ package code.mentor.rest;
 
 import code.mentor.dto.PostDTO;
 import code.mentor.dto.PostWithCategoryDTO;
-import code.mentor.entities.Post;
-import code.mentor.entities.Category;
+import code.mentor.models.Post;
+import code.mentor.models.Category;
 import code.mentor.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

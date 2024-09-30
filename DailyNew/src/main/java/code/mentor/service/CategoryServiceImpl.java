@@ -1,7 +1,7 @@
 package code.mentor.service;
 
-import code.mentor.dao.CategoryRepository;
-import code.mentor.entities.Category;
+import code.mentor.repository.CategoryRepository;
+import code.mentor.models.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
