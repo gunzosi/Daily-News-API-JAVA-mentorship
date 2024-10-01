@@ -49,10 +49,9 @@ public class UserDetailsImpl implements UserDetails {
         );
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities; // Sửa lại để trả về danh sách authorities
     }
 
     @Override
@@ -87,10 +86,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         UserDetailsImpl user = (UserDetailsImpl) obj;
         return Objects.equals(id, user.id);
     }

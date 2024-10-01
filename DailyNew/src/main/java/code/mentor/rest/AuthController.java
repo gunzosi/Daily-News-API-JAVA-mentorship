@@ -50,7 +50,7 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         // Xác thực người dùng
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
 
         // Đặt Authentication vào SecurityContext
@@ -58,56 +58,49 @@ public class AuthController {
 
         // Trả về thông báo thành công
         return ResponseEntity.ok(new MessageResponse("User signed in successfully with username: "
-                + loginRequest.getUsername()));
+                + loginRequest.getEmail()));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         System.out.println("Registering user: " + signUpRequest.getUsername());
 
-        // Kiểm tra xem username có tồn tại không
+        // Check username existence
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
 
-        // Kiểm tra xem email có tồn tại không
+        // Check email existence
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        // Tạo user mới và mã hóa mật khẩu
-        User user = new User(signUpRequest.getUsername(),
-                encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getEmail());
-
-        // Gán vai trò cho user
+        // Create new user and encode password
+        User user = new User(signUpRequest.getUsername(),  signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
+                System.out.println("Looking for role: " + role);  // Log role search
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_ADMIN' is not found."));
                         roles.add(adminRole);
                         break;
                     case "mod":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_MODERATOR' is not found."));
                         roles.add(modRole);
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' is not found."));
                         roles.add(userRole);
                 }
             });
@@ -115,10 +108,9 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
-
-        // Trả về thông báo đăng ký thành công
         return ResponseEntity.ok(new MessageResponse("User registered successfully."));
     }
+
 
 }
 
