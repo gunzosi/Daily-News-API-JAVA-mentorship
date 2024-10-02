@@ -8,17 +8,14 @@ import code.mentor.payload.request.SignupRequest;
 import code.mentor.payload.response.MessageResponse;
 import code.mentor.repository.RoleRepository;
 import code.mentor.repository.UserRepository;
-
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +73,7 @@ public class AuthController {
         }
 
         // Create new user and encode password
-        User user = new User(signUpRequest.getUsername(),  signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
