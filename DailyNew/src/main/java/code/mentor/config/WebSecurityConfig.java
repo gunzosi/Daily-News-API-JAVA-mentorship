@@ -35,12 +35,17 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers("/v1/api/rss/load").permitAll() // Cho phép truy cập endpoint này
+                                .requestMatchers("/v1/api/**").permitAll() // Cho phép tất cả các yêu cầu đến các endpoint này
                                 .requestMatchers("/v1/api/auth/**").permitAll() // Cho phép tất cả các yêu cầu đến endpoint này
                                 .anyRequest().authenticated() // Tất cả các yêu cầu khác đều cần xác thực
                 );
 
         return http.build();
     }
+
+
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

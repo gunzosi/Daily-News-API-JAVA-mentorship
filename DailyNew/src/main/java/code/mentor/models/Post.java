@@ -40,7 +40,8 @@ public class Post {
 
     @NotNull
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "MEDIUMTEXT")
+//    @Size(max = 3600)
     private String content;
 
     @Size(max = 255)
@@ -56,6 +57,8 @@ public class Post {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "pub_date")
     private Instant pubDate;
+
+    // Item ID + Source  == null update // insert
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at")
