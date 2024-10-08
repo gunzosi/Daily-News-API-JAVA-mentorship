@@ -24,14 +24,14 @@ import java.util.Optional;
 
 
 @Service
-public class RssFeedService {
+public class RssFeedServiceImpl {
 
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final RssLinkRepository rssLinkRepository;
 
     @Autowired
-    public RssFeedService(PostRepository postRepository, CategoryRepository categoryRepository, RssLinkRepository rssLinkRepository) {
+    public RssFeedServiceImpl(PostRepository postRepository, CategoryRepository categoryRepository, RssLinkRepository rssLinkRepository) {
         this.postRepository = postRepository;
         this.categoryRepository = categoryRepository;
         this.rssLinkRepository = rssLinkRepository;

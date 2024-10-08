@@ -2,6 +2,7 @@ package code.mentor.service;
 
 import code.mentor.models.Category;
 import code.mentor.repository.CategoryRepository;
+import code.mentor.service.iService.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

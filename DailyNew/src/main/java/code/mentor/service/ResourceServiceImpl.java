@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ResourceService {
+public class ResourceServiceImpl {
 
     private final ResourceRepository resourceRepository;
 
     @Autowired
-    public ResourceService(ResourceRepository resourceRepository) {
+    public ResourceServiceImpl(ResourceRepository resourceRepository) {
         this.resourceRepository = resourceRepository;
     }
 

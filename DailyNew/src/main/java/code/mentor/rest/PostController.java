@@ -4,7 +4,7 @@ import code.mentor.dto.PostDTO;
 import code.mentor.dto.PostWithCategoryDTO;
 import code.mentor.models.Category;
 import code.mentor.models.Post;
-import code.mentor.service.PostService;
+import code.mentor.service.iService.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -2,7 +2,7 @@ package code.mentor.rest;
 
 import code.mentor.models.Category;
 import code.mentor.models.Post;
-import code.mentor.service.CategoryService;
+import code.mentor.service.iService.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
