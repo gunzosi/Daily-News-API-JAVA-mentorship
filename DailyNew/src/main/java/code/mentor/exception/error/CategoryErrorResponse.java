@@ -1,4 +1,4 @@
-package code.mentor.exception;
+package code.mentor.exception.error;
 
 public class CategoryErrorResponse {
 }

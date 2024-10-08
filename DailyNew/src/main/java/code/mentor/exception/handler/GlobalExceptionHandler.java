@@ -1,5 +1,6 @@
-package code.mentor.exception;
+package code.mentor.exception.handler;
 
+import code.mentor.exception.ResourceNotFoundException;
 import code.mentor.payload.response.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,5 +18,11 @@ public class GlobalExceptionHandler {
                 .body(new MessageResponse("Error: " + ex.getMessage()));
     }
 
-    // You can add more handlers for different exceptions as needed
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<MessageResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new MessageResponse("Error: " + ex.getMessage()));
+    }
+
 }

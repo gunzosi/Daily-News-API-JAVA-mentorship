@@ -2,8 +2,11 @@ package code.mentor.service;
 
 import code.mentor.models.Category;
 import code.mentor.models.Post;
+import code.mentor.models.Resource;
+import code.mentor.models.RssLink;
 import code.mentor.repository.CategoryRepository;
 import code.mentor.repository.PostRepository;
+import code.mentor.repository.RssLinkRepository;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -14,7 +17,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
@@ -26,21 +28,30 @@ public class RssFeedService {
 
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final RssLinkRepository rssLinkRepository;
 
     @Autowired
-    public RssFeedService(PostRepository postRepository, CategoryRepository categoryRepository) {
+    public RssFeedService(PostRepository postRepository, CategoryRepository categoryRepository, RssLinkRepository rssLinkRepository) {
         this.postRepository = postRepository;
         this.categoryRepository = categoryRepository;
+        this.rssLinkRepository = rssLinkRepository;
     }
+
+
 
     @Scheduled(fixedRate = 120000)  // Mỗi 2 phút (120000 ms)
     public void scheduledRssFeedUpdate() {
-        // Ví dụ với URL và categoryName cố định, có thể lấy từ config
-        String rssUrl = "https://vnexpress.net/rss/khoa-hoc.rss";
-        String categoryName = "Technology";
+        // Lấy danh sách RSS link từ database
+        List<RssLink> rssLinks = rssLinkRepository.findAll();
 
-        // Gọi hàm fetchAndSaveRssFeed để xử lý
-        fetchAndSaveRssFeed(rssUrl, categoryName);
+        // Lặp qua từng RSS link và lưu bài viết
+        for (int i = 0; i < rssLinks.size(); i++) {
+            RssLink rssLink = rssLinks.get(i);
+            fetchAndSaveRssFeed(rssLink.getUrl(), rssLink.getCategory().getName());
+            System.out.println((i + 1) + ". Đã lưu bài viết từ \"RSS-Link\": " + rssLink.getUrl()
+                    + " vào CATEGORY: " + rssLink.getCategory().getName()
+                    + " tai RESOURCE: " + rssLink.getResource().getName());
+        }
     }
 
     public void fetchAndSaveRssFeed(String rssUrl, String categoryName) {
@@ -111,5 +122,17 @@ public class RssFeedService {
         post.setCategory(category);
         postRepository.save(post);
         System.out.println("Post inserted: " + entry.getTitle());
+    }
+
+    public void addRssLink(String rssUrl, Category category, Resource resource) {
+        RssLink rssLink = new RssLink();
+        rssLink.setUrl(rssUrl);
+        rssLink.setCategory(category);
+        rssLink.setResource(resource);
+        rssLinkRepository.save(rssLink);
+    }
+
+    public Category getCategoryByName(String categoryName) {
+        return categoryRepository.findByName(categoryName);
     }
 }
