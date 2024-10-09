@@ -1,0 +1,63 @@
+# CATEGORY
+
+POST : http://localhost:8080/v1/api/category
+
+{
+  "name": "Sport",
+  "description": "Sport news, scores, and analysis."
+}
+
+{
+  "name": "Travel",
+  "description": "Travel guides, tips, and destination reviews."
+}
+
+{
+  "name": "Science",
+  "description": "Science news, research, and analysis."
+}
+
+# RESOURCE
+
+POST : http://localhost:8080/v1/api/resource
+
+{
+  "name": "VnExpress"
+}
+
+{
+    "name": "BBC"
+}
+
+{
+    "name": "CNN"
+}
+
+{
+    "name": "ESPN"
+}
+
+{
+    "name": "Travel Guides",
+}
+
+{
+    "name": "Lonely Planet"
+}
+
+{
+    "name": "Trip Advisor"
+}
+
+{
+    "name": "Science News",
+}
+
+{
+    "name": "National Geographic"
+}
+
+{
+    "name": "Scientific American"
+}
+
