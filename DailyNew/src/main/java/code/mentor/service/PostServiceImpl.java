@@ -1,5 +1,6 @@
 package code.mentor.service;
 
+import code.mentor.dto.SearchCriteria;
 import code.mentor.models.Post;
 import code.mentor.repository.PostRepository;
 import code.mentor.service.iService.PostService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -53,4 +55,9 @@ public class PostServiceImpl implements PostService {
         }
         postRepository.deleteById(id);
     }
+
+    public Optional<List<Post>> searchPostsByBody(SearchCriteria criteria) {
+        return postRepository.findByTitleContaining(criteria.getQuery());
+    }
+
 }

@@ -2,6 +2,7 @@ package code.mentor.rest;
 
 import code.mentor.dto.PostDTO;
 import code.mentor.dto.PostWithCategoryDTO;
+import code.mentor.dto.SearchCriteria;
 import code.mentor.models.Category;
 import code.mentor.models.Post;
 import code.mentor.service.iService.PostService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/api/post")
@@ -116,4 +118,11 @@ public class PostController {
         postService.deletePostById(postId);
         return ResponseEntity.ok("Delete POST Successfully");
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<Optional<List<Post>>> searchPosts(@RequestBody SearchCriteria criteria) {
+        Optional<List<Post>> posts = postService.searchPostsByBody(criteria);
+        return ResponseEntity.ok(posts);
+    }
+
 }

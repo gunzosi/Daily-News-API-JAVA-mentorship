@@ -1,12 +1,16 @@
 package code.mentor.rest;
 
 import code.mentor.models.Resource;
+import code.mentor.models.RssLink;
+import code.mentor.payload.response.ResourceResponse;
 import code.mentor.service.ResourceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/api/resource")
@@ -21,9 +25,20 @@ public class ResourceController {
 
     // Lấy tất cả các resource
     @GetMapping
-    public ResponseEntity<List<Resource>> getAllResources() {
+    public ResponseEntity<List<ResourceResponse>> getAllResources() {
         List<Resource> resources = resourceServiceImpl.getAllResources();
-        return ResponseEntity.ok(resources);
+        List<ResourceResponse> resourceResponses = resources.stream()
+                .map(this::toResourceResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(resourceResponses);
+    }
+
+    // Method to convert Resource to ResourceResponse
+    private ResourceResponse toResourceResponse(Resource resource) {
+        Set<Integer> rssLinkIds = resource.getRssLinks().stream()
+                .map(RssLink::getId)
+                .collect(Collectors.toSet());
+        return new ResourceResponse(resource.getId(), resource.getName(), rssLinkIds);
     }
 
     // Thêm mới resource

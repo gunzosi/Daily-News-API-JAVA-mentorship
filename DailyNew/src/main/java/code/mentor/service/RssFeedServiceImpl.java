@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class RssFeedServiceImpl {
 
@@ -37,82 +36,78 @@ public class RssFeedServiceImpl {
         this.rssLinkRepository = rssLinkRepository;
     }
 
-
-
-    @Scheduled(fixedRate = 120000)  // Mỗi 2 phút (120000 ms)
+    @Scheduled(fixedRate = 120000)  // Every 2 minutes (120000 ms)
     public void scheduledRssFeedUpdate() {
-        // Lấy danh sách RSS link từ database
         List<RssLink> rssLinks = rssLinkRepository.findAll();
+        System.out.println("\n\n*** -------------------------------------------------- Start fetching RSS feeds...");
 
-        // Lặp qua từng RSS link và lưu bài viết
-        for (int i = 0; i < rssLinks.size(); i++) {
-            RssLink rssLink = rssLinks.get(i);
+        // Iterate over each RSS link and fetch posts
+        rssLinks.forEach(rssLink -> {
             fetchAndSaveRssFeed(rssLink.getUrl(), rssLink.getCategory().getName());
-            System.out.println((i + 1) + ". Đã lưu bài viết từ \"RSS-Link\": " + rssLink.getUrl()
-                    + " vào CATEGORY: " + rssLink.getCategory().getName()
-                    + " tai RESOURCE: " + rssLink.getResource().getName());
-        }
+            System.out.printf("SAVED ALL posts from \"RSS-Link\": \"%s\" in CATEGORY: \"%s\" of RESOURCE: \"%s\"%n",
+                    rssLink.getUrl(), rssLink.getCategory().getName(), rssLink.getResource().getName());
+        });
     }
 
     public void fetchAndSaveRssFeed(String rssUrl, String categoryName) {
         try {
-            // Lấy feed từ RSS URL
+            // Fetch the feed from the RSS URL
             SyndFeed feed = getFeedFromUrl(rssUrl);
 
-            // Tìm category, nếu không có thì dừng lại
+            // Find category; if not found, terminate
             Category category = categoryRepository.findByName(categoryName);
             if (category == null) {
-                System.out.println("Category không tồn tại, vui lòng tạo category: " + categoryName);
+                System.out.println("⁉️ Category does not exist. Please create the category: " + categoryName);
                 return;
             }
 
-            // Xử lý danh sách bài viết từ RSS feed
+            // Process the list of posts from the RSS feed
             processFeedEntries(feed.getEntries(), category);
 
-            System.out.println("Đã lưu thành công các bài viết từ RSS tại link: " + rssUrl);
+            System.out.println("✅ Successfully saved posts from RSS link: " + rssUrl);
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Lỗi khi lưu bài viết từ RSS tại link: " + rssUrl);
+            System.out.println(" ❌ Error while saving posts from RSS link: " + rssUrl);
         }
     }
 
-    // Phương thức lấy RSS feed từ URL
+    // Method to fetch RSS feed from URL
     private SyndFeed getFeedFromUrl(String rssUrl) {
         try {
             URL url = new URL(rssUrl);
             SyndFeedInput input = new SyndFeedInput();
             return input.build(new XmlReader(url));
         } catch (FeedException | IOException e) {
-            throw new RuntimeException("Lỗi khi đọc RSS feed từ URL: " + rssUrl, e);
+            throw new RuntimeException(" @@@ -------- Error reading RSS feed from URL: " + rssUrl, e);
         }
     }
 
-    // Phương thức xử lý các bài viết trong RSS feed
+    // Method to process the posts in the RSS feed
     private void processFeedEntries(List<SyndEntry> entries, Category category) {
         for (SyndEntry entry : entries) {
             Optional<Post> existingPost = postRepository.findByLink(entry.getLink());
 
             if (existingPost.isPresent()) {
-                // Cập nhật bài viết nếu đã tồn tại
+                // Update the post if it already exists
                 updateExistingPost(existingPost.get(), entry);
             } else {
-                // Tạo mới bài viết nếu chưa tồn tại
+                // Create a new post if it doesn't exist
                 createNewPost(entry, category);
             }
         }
     }
 
-    // Phương thức cập nhật bài viết đã tồn tại
+    // Method to update an existing post
     private void updateExistingPost(Post post, SyndEntry entry) {
         post.setTitle(entry.getTitle());
         post.setContent(entry.getDescription().getValue());
         post.setUpdatedAt(Instant.now());
         postRepository.save(post);
-        System.out.println("Post updated: " + entry.getTitle());
+        System.out.println("4. --- Post updated: " + entry.getTitle());
     }
 
-    // Phương thức tạo bài viết mới
+    // Method to create a new post
     private void createNewPost(SyndEntry entry, Category category) {
         Post post = new Post();
         post.setTitle(entry.getTitle());
@@ -121,7 +116,7 @@ public class RssFeedServiceImpl {
         post.setPubDate(Instant.now());
         post.setCategory(category);
         postRepository.save(post);
-        System.out.println("Post inserted: " + entry.getTitle());
+        System.out.println("5. --- New post inserted: " + entry.getTitle());
     }
 
     public void addRssLink(String rssUrl, Category category, Resource resource) {

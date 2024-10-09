@@ -1,7 +1,9 @@
 package code.mentor.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,8 +44,9 @@ public class Resource {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "resource")
+    @OneToMany(mappedBy = "resource", orphanRemoval = true, fetch = FetchType.LAZY)  // Hoặc EAGER nếu cần tải luôn
     private Set<RssLink> rssLinks = new LinkedHashSet<>();
+
 
     @PrePersist
     protected void onCreate() {
