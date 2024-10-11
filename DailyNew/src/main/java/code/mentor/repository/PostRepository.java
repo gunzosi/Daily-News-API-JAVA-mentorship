@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Optional<Post> findByLink(String link);
     Optional<List<Post>> findByTitleContaining(String name);
+    List<Post> findAll();
 }
 

@@ -18,4 +18,6 @@ public interface PostService {
     void deletePostById(int id);
 
     Optional<List<Post>> searchPostsByBody(SearchCriteria criteria);
+
+    List<Post> searchFuzzyByTitle(String keyword);
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -123,6 +124,12 @@ public class PostController {
     public ResponseEntity<Optional<List<Post>>> searchPosts(@RequestBody SearchCriteria criteria) {
         Optional<List<Post>> posts = postService.searchPostsByBody(criteria);
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/fuzzy-search")
+    public ResponseEntity<List<Post>> searchFuzzyByTitle(@RequestParam String keyword) {
+        List<Post> matchingPosts = postService.searchFuzzyByTitle(keyword);
+        return ResponseEntity.ok(matchingPosts);
     }
 
 }
