@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Setter
 @Embeddable
 public class UserFavoriteCategoryId implements Serializable {
+    @Serial
     private static final long serialVersionUID = -8730207440298083419L;
     @NotNull
     @Column(name = "user_id", nullable = false)

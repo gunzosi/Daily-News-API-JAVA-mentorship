@@ -33,5 +33,18 @@
       "description": "Movies and music"
     }
   ]
+];
+[
+  {
+    "id": 3,
+    "name": "Science"
+  },
+  {
+    "id": 2,
+    "name": "Sport"
+  },
+  {
+    "id": 1,
+    "name": "Travel"
+  }
 ]
-

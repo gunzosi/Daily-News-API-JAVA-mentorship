@@ -6,6 +6,7 @@ import code.mentor.models.User;
 import code.mentor.payload.request.LoginRequest;
 import code.mentor.payload.request.SignupRequest;
 import code.mentor.payload.response.MessageResponse;
+import code.mentor.payload.response.UserResponse;
 import code.mentor.repository.RoleRepository;
 import code.mentor.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -16,13 +17,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("v1/api/auth")
@@ -106,6 +110,15 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully."));
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<?> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> userResponses = users.stream()
+                .map(user -> new UserResponse(user.getId(), user.getUsername(), user.getEmail()))
+                .toList();
+        return ResponseEntity.ok(userResponses);
     }
 
 
