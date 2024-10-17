@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryId {
+public class CategoryIdDTO {
     private Integer id;
 }

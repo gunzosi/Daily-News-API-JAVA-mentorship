@@ -3,12 +3,14 @@ package code.mentor.rest;
 
 import code.mentor.dto.UserFavoriteCategoryDTO;
 import code.mentor.dto.UserWithFavoriteCategoriesDTO;
+import code.mentor.models.Post;
 import code.mentor.models.User;
 import code.mentor.models.UserFavoriteCategory;
 import code.mentor.payload.request.FavoriteCategoryRequest;
 import code.mentor.payload.response.MessageResponse;
 import code.mentor.repository.CategoryRepository;
 import code.mentor.repository.UserRepository;
+import code.mentor.service.iService.PostService;
 import code.mentor.service.iService.UserFavoriteCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +30,13 @@ public class UserFavoriteCategoryController {
 
     private final UserFavoriteCategoryService userFavoriteCategoryService;
     private final UserRepository userRepository;
+    private final PostService postService;
 
     @Autowired
-    public UserFavoriteCategoryController(UserFavoriteCategoryService userFavoriteCategoryService, UserRepository userRepository) {
+    public UserFavoriteCategoryController(UserFavoriteCategoryService userFavoriteCategoryService, UserRepository userRepository, PostService postService) {
         this.userFavoriteCategoryService = userFavoriteCategoryService;
         this.userRepository = userRepository;
+        this.postService = postService;
     }
 
     @PostMapping("/{userId}/favorite-categories")
@@ -70,5 +74,21 @@ public class UserFavoriteCategoryController {
         }).toList();
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<List<Post>> getPostsForUserFavoriteCategories(@PathVariable Long userId) {
+        // Lấy danh sách các danh mục yêu thích của người dùng
+        List<UserFavoriteCategory> favoriteCategories = userFavoriteCategoryService.getFavoriteCategoriesByUserId(userId);
+
+        // Trích xuất ID của các danh mục
+        List<Integer> categoryIds = favoriteCategories.stream()
+                .map(userFavCat -> userFavCat.getCategory().getId())
+                .collect(Collectors.toList());
+
+        // Lấy danh sách các bài viết theo các danh mục đó
+        List<Post> posts = postService.getPostsByCategories(categoryIds);
+
+        return ResponseEntity.ok(posts);
     }
 }

@@ -7,6 +7,7 @@ import code.mentor.models.Category;
 import code.mentor.models.Post;
 import code.mentor.service.iService.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -132,4 +133,11 @@ public class PostController {
         return ResponseEntity.ok(matchingPosts);
     }
 
+    @GetMapping("/sorted-posts")
+    public ResponseEntity<Page<Post>> getPostsSortedByDate(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Post> posts = postService.getAllPosts(page, size);
+        return ResponseEntity.ok(posts);
+    }
 }

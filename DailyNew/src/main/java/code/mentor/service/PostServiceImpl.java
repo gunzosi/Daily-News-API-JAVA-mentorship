@@ -7,6 +7,10 @@ import code.mentor.service.iService.PostService;
 import com.intuit.fuzzymatcher.component.MatchService;
 import com.intuit.fuzzymatcher.domain.Match;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.intuit.fuzzymatcher.domain.Document;
@@ -16,7 +20,6 @@ import com.intuit.fuzzymatcher.domain.ElementType;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,6 +99,18 @@ public class PostServiceImpl implements PostService {
                         .filter(post -> String.valueOf(post.getId()).equals(document.getKey()))
                         .findFirst().stream())
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Page<Post> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "pubDate", "updatedAt"));
+        return postRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Post> getPostsByCategories(List<Integer> categoryIds) {
+        return postRepository.findByCategoryIdIn(categoryIds);
     }
 
 }
