@@ -5,6 +5,7 @@ import code.mentor.dto.PostWithCategoryDTO;
 import code.mentor.dto.SearchCriteria;
 import code.mentor.models.Category;
 import code.mentor.models.Post;
+import code.mentor.payload.response.SearchResponse;
 import code.mentor.service.iService.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,16 +124,49 @@ public class PostController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Optional<List<Post>>> searchPosts(@RequestBody SearchCriteria criteria) {
-        Optional<List<Post>> posts = postService.searchPostsByBody(criteria);
+    public ResponseEntity<List<Post>> searchPosts(@RequestBody SearchCriteria criteria) {
+        List<Post> posts = postService.searchPostsByBody(criteria).orElse(Collections.emptyList());
         return ResponseEntity.ok(posts);
     }
 
+
+//    @GetMapping("/fuzzy-search")
+//    public ResponseEntity<List<Post>> searchFuzzyByTitle(@RequestParam String keyword) {
+//        List<Post> matchingPosts = postService.searchFuzzyByTitle(keyword);
+//        return ResponseEntity.ok(matchingPosts);
+//    }
+
+//    @GetMapping("/fuzzy-search")
+//    public ResponseEntity<SearchResponse> searchFuzzyByTitle(@RequestParam String keyword) {
+//        if (keyword == null || keyword.trim().isEmpty()) {
+//            return ResponseEntity.badRequest().body(new SearchResponse(Collections.emptyList(), 0));
+//        }
+//
+//        List<Post> matchingPosts = postService.searchFuzzyByTitle(keyword);
+//        SearchResponse response = new SearchResponse(matchingPosts, matchingPosts.size());
+//
+//        return ResponseEntity.ok(response);
+//    }
+
     @GetMapping("/fuzzy-search")
     public ResponseEntity<List<Post>> searchFuzzyByTitle(@RequestParam String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+
+        System.out.println("Searching for posts with keyword: " + keyword); // Logging keyword
+
         List<Post> matchingPosts = postService.searchFuzzyByTitle(keyword);
+
+        if (matchingPosts.isEmpty()) {
+            System.out.println("No posts found matching the keyword."); // Logging no result
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(matchingPosts);
     }
+
+
 
     @GetMapping("/sorted-posts")
     public ResponseEntity<Page<Post>> getPostsSortedByDate(

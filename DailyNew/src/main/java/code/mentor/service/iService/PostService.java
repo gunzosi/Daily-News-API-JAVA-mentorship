@@ -27,4 +27,6 @@ public interface PostService {
 
     List<Post> getPostsByCategories(List<Integer> categoryIds);
 
+
+
 }

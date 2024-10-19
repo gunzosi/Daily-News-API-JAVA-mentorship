@@ -68,12 +68,12 @@ public class AuthController {
 
         // Check username existence
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken."));
         }
 
         // Check email existence
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use."));
         }
 
         // Create new user and encode password
@@ -91,17 +91,17 @@ public class AuthController {
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_ADMIN' is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_ADMIN' isn't found."));
                         roles.add(adminRole);
                         break;
                     case "mod":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_MODERATOR' is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_MODERATOR' isn't found."));
                         roles.add(modRole);
                         break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' is not found."));
+                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' isn't found."));
                         roles.add(userRole);
                 }
             });
