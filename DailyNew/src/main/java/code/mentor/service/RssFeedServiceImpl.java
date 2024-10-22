@@ -36,10 +36,10 @@ public class RssFeedServiceImpl {
         this.rssLinkRepository = rssLinkRepository;
     }
 
-    @Scheduled(fixedRate = 120000)  // Every 2 minutes (120000 ms)
+    // @Scheduled(fixedRate = 600000)  // Every 10 minutes = 600000 ms
     public void scheduledRssFeedUpdate() {
         List<RssLink> rssLinks = rssLinkRepository.findAll();
-        System.out.println("\n\n*** -------------------------------------------------- Start fetching RSS feeds...");
+        System.out.println("\n\n*** ------------------------------------------------------------------------------- Start fetching RSS feeds...");
 
         // Iterate over each RSS link and fetch posts
         rssLinks.forEach(rssLink -> {
@@ -47,6 +47,8 @@ public class RssFeedServiceImpl {
             System.out.printf("SAVED ALL posts from \"RSS-Link\": \"%s\" in CATEGORY: \"%s\" of RESOURCE: \"%s\"%n",
                     rssLink.getUrl(), rssLink.getCategory().getName(), rssLink.getResource().getName());
         });
+
+        System.out.println("*** ------------------------------------------------------------------------------- End fetching RSS feeds...\n\n");
     }
 
     public void fetchAndSaveRssFeed(String rssUrl, String categoryName) {
@@ -64,7 +66,7 @@ public class RssFeedServiceImpl {
             // Process the list of posts from the RSS feed
             processFeedEntries(feed.getEntries(), category);
 
-            System.out.println("✅ Successfully saved posts from RSS link: " + rssUrl);
+            System.out.println(">>>>> Successfully saved posts from RSS link: " + rssUrl);
 
         } catch (Exception e) {
             e.printStackTrace();
